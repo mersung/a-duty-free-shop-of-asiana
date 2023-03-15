@@ -1,0 +1,18 @@
+<nav th:fragment="fragment-nav" class="navbar">
+	<div class="navbar_logo">
+		<a th:href="@{/}"><img th:src="@{/img/ASIANAIDT_S.png}" class="p-2"></img></a>
+	</div>
+	
+	<ul class="navbar_menu">
+		<li><a th:href="@{/shop}">Shop</a></li>
+		<li><a th:href="@{/cart}">cart</a></li>
+		<li><a th:href="@{/notification}">Notification</a></li>	
+	</ul>
+	
+	<ul class="navbar_log">
+		<li sec:authorize="isAnonymous()" ><a th:href="@{/login}">LogIn</a></li>
+		<li sec:authorize="hasRole('ADMIN')"><a th:href="@{/product/new}">Admin</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">LogOut</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/mypage}">MyPage</a></li>	
+	</ul>
+</nav>

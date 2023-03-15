@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script type="text/javascript" th:src="@{/js/exhange.js}"></script>
+</head>
+<div layout:fragment="content">
+<b class="fs-4">마이페이지</b>
+<hr>
+<form>
+<br>
+<div th:each="entryList : ${payList}">
+<div class="card" style="margin: auto;" th:each="entry : ${entryList.value}">
+  <div class="card-header">
+    <b>주문번호</b><br>
+    <b class="fs-4"><span th:text="${entryList.key}"></span></b><u>(<span th:text="${entry.orderDate}"></span>)</u>
+  </div>
+  <div class="card-body">
+  	<div style="text-align: center;" th:each="product : ${entry.itemList}"> 
+	    <br>
+	    <h5 class="card-title"><span th:text="${product.name}"></span></h5>
+	    <p class="card-text">주문수량 : <span th:text="${product.cnt}"></span>개</p>
+    </div>
+    <hr>
+    <div style="display: flex; justify-content: space-between;">
+	    <div>
+	    	<b class="fs-5">총 금액 </b>
+	    </div>
+	    <div> 
+	    	<b class="fs-5">$<span th:text="${entry.totalPrice}"></span></b>
+	    </div>
+  	</div>
+  	<div style="display: flex; justify-content: space-between;">
+	    <div>
+	    	<p class="card-text">주문 시간</p>
+	    </div>
+	    <div> 
+	    	<p class="card-text"><span th:text="${entry.orderDate}"></span>&nbsp;<span th:text="${entry.orderTime}"></span></p>
+	    </div>
+  	</div>
+
+  	<div style="display: flex; justify-content: space-between;">
+	    <div>
+	    	<p class="card-text">탑승일</p>
+	    </div>
+	    <div> 
+	    	<p class="card-text"><span th:text="${entry.dpDate}"></span></p>
+	    </div>
+  	</div>
+  	
+  	<div style="display: flex; justify-content: space-between;">
+	    <div>
+	    	<p class="card-text">출국 공항</p>
+	    </div>
+	    <div> 
+	    	<p class="card-text"><span th:text="${entry.dpAirport}"></span></p>
+	    </div>
+  	</div>
+	</div>
+</div>
+<br>
+</div>
+
+<br>
+
+</form>
+
+</div>
+</html>

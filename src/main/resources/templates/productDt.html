@@ -1,0 +1,19 @@
+<meta charset="UTF-8">
+<form th:fragment="fragment-detail" th:action="@{'/order/'+${productDto.id}}" method="get" th:object="${productDto}" style="width: 80%" class="mx-auto" >
+
+<div class="d-flex flex-row justify-content-center">
+  <div>
+    <img th:src="@{${productImg.imgUrl}}" height="400"><br>
+  </div>
+  <div class = "detailInfo">
+    <li class="text-center">상품명: <span th:text="${productDto.name}"></span></li>
+    <li>가격:<span th:text="${productDto.price}"></span></li>
+    <li>주문 수량:<span th:text="${productDto.stock}"></span></li>
+    <li>분류:<span th:text="${productDto.category}"></span></li>
+    <li>내용:<span th:text="${productDto.content}"></span></li>
+    
+    <button type="submit">주문하기</button>
+  </div>
+  
+</div>
+</form>

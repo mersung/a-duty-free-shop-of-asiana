@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h2>상품 전체보기</h2>
+<hr>
+<th:block th:each="product, status: ${productList}">
+
+	<img th:src="@{${product.imgUrl}}" height="200"><br>
+	<div>
+		<h4>[[${product.name}]]</h4>
+		<p>[[${product.content}]]</p>
+		<h3>[[${product.price}]]원</h3>
+	</div>
+</body>
+</html>

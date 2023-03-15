@@ -1,0 +1,21 @@
+<nav th:fragment="fragment-shopnav" class="navbar">
+	<div class="navbar_logo">
+		<a th:href="@{/}"><img th:src="@{/img/ASIANAIDT_S.png}" class="p-2"></img></a>
+	</div>
+	
+	<ul class="navbar_menu">
+		<li><a th:href="@{/shop}">All</a></li>
+		<li><a th:href="@{/shop(cat = cosmetic)}">Cosmetic</a></li>
+		<li><a th:href="@{/shop(cat = sool)}">drink</a></li>
+		<li><a th:href="@{/shop(cat = fashion)}">fashion</a></li>	
+		<li><a th:href="@{/shop(cat = etc)}">ETC</a></li>
+		<li><a th:href="@{/shop(cat = foods)}">foods</a></li>
+	</ul>
+	
+	<ul class="navbar_log">
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/cart}">cart</a></li>
+		<li sec:authorize="isAnonymous()" ><a th:href="@{/login}">LogIn</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">LogOut</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/mypage}">MyPage</a></li>	
+	</ul>
+</nav>

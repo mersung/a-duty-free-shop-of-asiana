@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/test.css}">
+<script type="text/javascript" th:src="@{'http://dmaps.daum.net/map_js_init/postcode.v2.js'}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+</script>
+</head>
+<body>
+<h1>회원정보 수정</h1>
+<hr>
+<form th:action="@{/member/{id} (id=${memberDTO.id})}" method="post" th:object="${memberDTO}">
+	<input type="text" th:field="*{post}" id="postcode" placeholder="우편번호" required>
+	<button type="button" id="calldaumPostCode"s>우편번호검색</button><br>
+	<input type="text" th:field="*{addr1}" class="addr" id="address" placeholder="주소" required>				
+	<input type="text" th:field="*{addr2}" class="addr" id="detailAddress" placeholder="상세 주소"><br>
+	이벤트 수신
+	<input type="checkbox" name = "emailChk"> 이메일
+	<input type="checkbox" name = "smsChk"> SMS<br>
+	<input type="submit" value="수정">
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value = "${_csrf.token}">
+</form>
+<form th:action="@{/member/{id} (id=${memberDTO.id})}" method="post">
+  <input type="hidden" name="_method" value="delete"/>
+  <button type="submit">삭제</button>
+</form>
+</body>
+</html>

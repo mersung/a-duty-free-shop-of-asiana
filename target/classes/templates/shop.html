@@ -1,0 +1,107 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<meta name="_csrf" th:content="${_csrf?.token}" th:if="${_csrf} ne null">
+<meta name="_csrf_header" th:content="${_csrf?.headerName}" th:if="${_csrf} ne null">
+
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR&display=swap" rel="stylesheet">
+</head>
+
+<script th:inline="javascript">
+
+$(document).ready(function(){
+	let usa = '￦ ' +localStorage.getItem('usa');
+	let japan = '￦ ' +localStorage.getItem('japan');
+	let china = '￦ ' +localStorage.getItem('china');
+	$('.usa .exchange-value').append(usa);
+	$('.japan .exchange-value').append(japan);
+	$('.china .exchange-value').append(china);
+	var searchForm = $("#searchForm");
+	$("#search").click(function(){
+		searchForm.submit();
+	});
+	
+	$('.exchange-rate>ul>li').hide();
+	$('.exchange-rate>ul>li:first-child').show();
+
+	setInterval(function(){
+	    $('.exchange-rate>ul>li:first-child').fadeOut()
+	    .next().fadeIn().end(1000)
+	    .appendTo('.exchange-rate>ul');
+	},2000);
+
+});
+
+</script>
+
+<div th:replace="/shopHeader.html :: fragment-shopnav"></div>
+<body>
+<div class="main">
+	<div class="exchange-rate">
+		<ul>
+		<li class ="usa">
+			<span class="exchange">Exchange Rate    [USA] :</span> <span class="exchange-value"></span>		
+		</li>
+		<li class="japan">
+			<span class="exchange">Exchange Rate    [JAPAN] :</span> <span class="exchange-value"></span>		
+		</li>
+		<li class="china">
+			<span class="exchange">Exchange Rate    [CHINA] :</span> <span class="exchange-value"></span>		
+		</li>
+		</ul>
+	</div>
+	
+	<div class="search" style="font-family: 'Bebas Neue', cursive">
+	 <form action="/team0/shop" method="get" id="searchForm">
+	 	<input type="text" placeholder="Search" name="keyword">
+	 	<img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" id="search">
+	 </form>
+	 	
+	</div>	
+</div>
+<div th:replace="/shopevent.html :: fragment-carousel"></div>
+
+<div th:replace="/shoplist.html :: list"></div>
+<nav aria-label="Page navigation example">
+  
+
+<ul class="pagination h-100 justify-content-center align-items-center">
+
+<li class="page-item " th:if="${productList.prev}">
+ 
+<a class="page-link" th:href="@{/shop(page= ${productList.start -1} ,cat=${productList.category})}" tabindex="-1">이전</a>
+ 
+</li>
+ 
+<li th:class=" 'page-item ' + ${productList.page == page?'active':''} " th:each="page: ${productList.pageList}">
+<a class="page-link" th:href="@{/shop(page = ${page},cat=${productList.category})}">
+
+[[${page}]]
+</a>
+
+</li>
+
+<li class="page-item" th:if="${productList.next}">
+<a class="page-link" th:href="@{/shop(page= ${productList.end + 1} ,cat=${productList.category})}">다음</a>
+
+</li>
+ 
+</ul>
+
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+<div th:replace="/footer.html :: fragment-footer"></div>
+
+</html>
+
+

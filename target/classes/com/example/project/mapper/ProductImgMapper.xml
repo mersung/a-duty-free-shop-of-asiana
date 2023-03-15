@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.mapper.ProductImgMapper">
+	<select id="findById" resultType="ImageDTO" parameterType="Long">
+		select * 
+		from productImg
+		where id = #{id}
+	</select>
+	<insert id="saveProductImg" parameterType="ImageDTO">
+		insert into productImg(img_name, img_url, origin_name, product_id)
+		values(#{imgName}, #{imgUrl}, #{originName}, #{productId})
+	</insert>
+	<select id="findByProductId" resultMap="imageMap" parameterType="int">
+		select img_name, img_url,origin_name
+		from productImg
+		where product_id = #{id}
+	</select>
+	
+	<resultMap id = "imageMap" type="ImageDTO" >
+		<id property ="imgName" column="img_name" />
+		<id property ="imgUrl" column="img_url" />
+		<id property ="originName" column="origin_name" />
+		<id property ="productId" column="product_id" />
+	</resultMap>
+</mapper>

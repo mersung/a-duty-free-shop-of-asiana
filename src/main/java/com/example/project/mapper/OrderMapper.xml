@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.mapper.OrderMapper">
+	<insert id="saveOrder" parameterType="OrderDTO">
+		insert into orderList(order_status, cnt, user_id, product_id, dp_airport, ar_airport, dp_date, order_time, total_price, tid)
+		values(#{orderStatus}, #{cnt}, #{userId}, #{productId}, #{dpAirport}, #{arAirport}, #{dpDate}, #{orderTime}, #{totalPrice}, #{tid})
+	</insert>
+	
+	<select id="findAll" parameterType="int" resultMap="orderMap">
+		select *
+		from orderList
+		where user_id = #{userId}
+	</select>
+	
+	<select id="findByTid" parameterType="String" resultMap="orderMap">
+		select *
+		from orderList
+		where tid = '${value}'
+	</select>
+	
+	<resultMap type="OrderDTO" id="orderMap">
+	  <result column="id" property="id" />
+	  <result column="dp_airport" property="dpAirport" />
+	  <result column="ar_airport" property="arAirport" />
+	  <result column="dp_date" property="dpDate" />
+	  <result column="order_date" property="orderDate" />
+	  <result column="order_time" property="orderTime" />
+	  <result column="total_price" property="totalPrice" />
+	  <result column="tid" property="tid" />
+	  <result column="user_id" property="userId" />
+	  <result column="product_id" property="productId" />
+	</resultMap> 
+</mapper>

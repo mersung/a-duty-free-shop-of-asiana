@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{'http://dmaps.daum.net/map_js_init/postcode.v2.js'}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script>
+
+	$(document).ready(function(){
+		$("#calldaumPostCode").click(daumPostcode);
+		$("#staticBackdrop").modal("show");
+		$("#postcode").focus(function(){
+			daumPostcode();
+		});
+		$("#ok").on("click",function(){
+			var a1 = $("#agree1").is(":checked");
+			var a2 = $("#agree2").is(":checked");
+			if(a1&&a2){
+				$("#staticBackdrop").modal("hide");
+			}
+			else{
+				alert("모두 동의해주세요");
+			}
+		});
+	});
+	//Daum 우편번호 API 이용
+	function daumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						var address=data.roadAddress;
+						if(data.userSelectedType=="J"){
+							address=data.jibunAddress;
+						}
+						// 우편번호와 주소 정보를 해당 필드에 넣는다.
+						$("#postcode").val(data.zonecode); 
+						$("#address").val(address);	
+						$(this).blur();
+						$("#detailAddress").focus();									
+					}
+				}).open();
+	};
+</script>
+</head>
+<div layout:fragment="content">
+<b class="fs-4">회원 가입</b>
+<hr>
+<form th:action="@{/signUp}" method="post" th:object="${memberDTO}">
+	<div class="form-group">
+		<b>이메일</b><input type="email" class="form-control" th:field="*{email}">
+		<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: #bd2130;">Incorrect data</p>
+	</div>
+	<div class="form-group">
+		<b>비밀번호</b><input type="password" class="form-control" th:field="*{passwd}">
+	</div>
+	<div class="form-group">
+		<b>비밀번호 확인</b><input type="password" name="passwdCheck"  class="form-control" >
+	</div>
+	<div style="display: flex; justify-content: space-between;">
+		<div class="form-group" style="width: 80%">		
+			<input type="text" th:field="*{post}" id="postcode" class="form-control" placeholder="우편번호" required>
+		</div>
+		<div class="form-group" style="width: 15%">		
+			<button type="button" class="mybtn mx-auto" id="calldaumPostCode" style="width: 100%;">우편번호검색</button>
+		</div>
+	</div>
+		<b>주소</b>
+	<div style="display: flex; justify-content: space-between;">
+		<div class="form-group" style="width: 65%">
+			<input type="text" class="form-control" th:field="*{addr1}" id="address" placeholder="주소" required>			
+		</div>			
+		<div class="form-group" style="width: 30%">
+			<input type="text" class="form-control" th:field="*{addr2}" id="detailAddress" placeholder="상세 주소">
+		</div>
+	</div>
+		<b>이벤트 수신</b>
+		<input type="checkbox" name = "emailChk"><b>이메일</b>
+		<input type="checkbox" name = "smsChk"> SMS<br>
+	<div style="width:100%; text-align:right">
+		<button type="submit" class="mybtn mx-auto">가입</button>
+	</div>
+</form>
+</div>
+</html>

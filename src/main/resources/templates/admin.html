@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<script>
+	// 장바구니 상품 개수 수정 버튼 함수
+	function del(num){
+		var changeCnt = document.getElementById('select_value');
+		location.href="cart/?cnt="+num;
+	}
+</script>
+<body>
+<h2>상품 상세보기</h2>
+<hr>
+<form action="@{/cart}" method="post">
+	<ul th:each="product : ${cartList}">
+	
+		<form th:action="@{/cart}" method="post">
+			<img th:src="@{${product.imgUrl}}" height="400"><br>
+			<li>상품명: <span th:text="${product.name}"></span></li>
+			<li>상품 개수: <span th:text="${product.cnt}"></span></li>
+			<li>상품 가격: <span th:text="${product.price}"></span></li>
+			<select id="select_value">
+				<option th:selected="${product.cnt}=='1'">1</option>
+				<option th:selected="${product.cnt}=='2'">2</option>
+				<option th:selected="${product.cnt}=='3'">3</option>
+				<option th:selected="${product.cnt}=='4'">4</option>
+				<option th:selected="${product.cnt}=='5'">5</option>
+			</select>
+			<input type="submit" value="수정">
+		</form>
+		<span th:text="${product.cartId}"></span>
+		<button type="submit"><a th:href="@{/cart/{cartId} (cartId=${product.cartId})}">삭제</a></button>
+	</ul>
+</form>
+
+</body>
+</html>

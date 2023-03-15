@@ -1,0 +1,106 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script language="javascript">
+	var val = document.getElementById('depart');
+
+	$(document).ready(function(){
+		$("#depart").on("change",function(){
+			$("#departAirport").empty();
+			var id = $("#depart").val();
+			for(var i=0; i<cityMap[id].length;i++){
+				var option = document.createElement('option');
+				option.setAttribute("value",cityMap[id][i]);
+				option.setAttribute("class","departAirline");
+				option.innerText = cityMap[id][i];
+				$("#departAirport").append(option);
+			}
+		});
+		
+		$("#arrive").on("change",function(){
+			$("#arriveAirport").empty();
+			var id = $("#arrive").val();
+			for(var i=0; i<cityMap[id].length;i++){
+				var option = document.createElement('option');
+				option.setAttribute("value",cityMap[id][i]);
+				option.setAttribute("class","arriveAirline");
+				option.innerText = cityMap[id][i];
+				$("#arriveAirport").append(option);
+			}
+		});
+		
+		$("#boardingDate").on("change",function(){
+			console.log("start");
+			var date = $("#boardingDate").val();
+			console.log(date);
+			console.log(typeof(date));
+		});
+		
+		$("#order").on("click",function(){
+			var orderData = {
+					boardDate:$("#boardingDate").val(),
+					departCountry: $("#depart").val(),
+					departAirline: $("#departAirport option:selected").val(),
+					arriveCountry: $("#arrive").val(),
+					arriveAirline: $("#arriveAirport option:selected").val()
+			};
+			//var token = $("meta[name='_csrf']").attr("content");
+			//var header = $("meta[name='_csrf_header']").attr("content");
+			$.ajax({
+				url:"http://localhost:8080/team0/order",
+				type:"post",
+				//beforeSend : function(xhr){
+				//	xhr.setRequestHeader(header, token);
+	           // },
+				headers:{'Content-Type':'application/json'},
+				data:JSON.stringify(orderData),
+				success:function(data,status,xhr){
+					console.log(data);
+				},
+				error:function(xhr,status,e){
+					console.log(e);
+				}
+			});
+		});
+	});
+
+</script>
+</head>
+<body>
+<form th:action="@{'/order/'+${productDto.id}+'/pay'}" method="post" th:object="${orderDto}">
+<h1>상품 주문 화면</h1>
+<div>
+탑승일자: <input type="date" id="boardingDate"><br>
+출발지: 
+<select id="depart" >
+	<option selected disabled>국가/지역 선택</option>
+	<option value="AR002">한국 (Korea)</option>
+	<option value="AR007">미국(U.S.A)</option>
+	<option value="AR008">유럽(Europe)</option>
+	<option value="AR006">동남아시아(South East Asia)</option>
+</select>
+<select id="departAirport" style="width:195px;height:19px;">
+</select>
+<br>
+도착지: <select id="arrive">
+	<option selected disabled>국가/지역 선택</option>
+	<option value="AR002">한국 (Korea)</option>
+	<option value="AR007">미국(U.S.A)</option>
+	<option value="AR008">유럽(Europe)</option>
+	<option value="AR006">동남아시아(South East Asia)</option>
+</select>
+<select id="arriveAirport" style="width:195px;height:19px;">
+</select>
+</div>
+<hr>
+<button id="order" type="button">주문하기</button>
+<input type="submit" value="제출">
+</form>
+<hr>
+</body>
+</html>

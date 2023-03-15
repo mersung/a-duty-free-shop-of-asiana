@@ -1,0 +1,240 @@
+<meta charset="UTF-8">
+<form th:fragment="fragment-detail" th:action="@{'/order/'+${productDto.id}}" method="get" th:object="${productDto}" style="width: 80%" class="mx-auto" >
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script type="text/javascript" th:src="@{'http://dmaps.daum.net/map_js_init/postcode.v2.js'}"></script>
+
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/> 
+
+ 
+
+
+<script th:inline="javascript">
+$(document).ready(function(){
+	// csrf 토큰 처리
+    var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	var productId = [[${productDto.id}]];
+	var userId = $('input[name="userId"]').val();
+	$(".replyBtn").click(function(){
+	    // 댓글 빈칸 checking
+	    var checkContent = $(".replyText").val();
+
+	    if(checkContent == ""){
+	        alert("댓글 내용을 입력해 주세요!");
+	        $(".replyText").focus();
+	        return false;
+	    }else{ // 댓글 내용 존재할 때 DB로 ajax 통해 전송
+	        var review = {
+	            userId : userId,
+	            content : $(".replyText").val(),
+	            productId : productId
+	        }
+
+
+	        console.log(review);
+
+	        $.ajax({
+	            url :'/team0/review',
+	            type : "POST",
+	            data : JSON.stringify(review),
+	            contentType : "application/json; charset = utf-8",
+	            dataType : "text",
+	            beforeSend : function(xhr){
+					xhr.setRequestHeader(header, token);
+	            }, 
+	            success : function(result){
+	                console.log("결과 : "+result);
+	                self.location.reload();
+
+	        }
+	        ,
+	        error:function(request,status,error){
+	            console.log("CODE: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+	    })
+	    }
+
+
+	}); // 댓글 등록 끝
+	
+	//댓글 수정 처리
+	// 확인 창
+ //// 댓글 툴박스 관련
+                var replyIndex;
+                var replyIdChk;
+                $(".comment_area").on("click", ".reply_tool", function(){
+                    var reply_tool = $(this);
+                    var reply_tool_box = $(this).find(".reply_tool_box");
+
+                    replyIndex = reply_tool.data("index");
+                    replyIdChk = reply_tool.data("identify");
+                    console.log(replyIndex);
+                    console.log(replyIdChk);
+                    if(check_id == replyIdChk){
+                        $(this).siblings(".reply_tool_box").css("display", "block").parents(".reply_wrap").siblings().find(".reply_tool_box").css("display", "none");
+                    }else{
+                        alert("권한이 없습니다!");
+                    }
+                })
+
+                // 툴박스 호버 효과 처리
+                $(".comment_area").on("mouseenter", ".tool_btn", function(){
+                    $(this).css("background-color", "#000").css("color", "#fff");
+                })
+                $(".comment_area").on("mouseleave", ".tool_btn", function(){
+                    $(this).css("background-color", "#fff").css("color", "#0d6efd");
+                })
+
+                // 허공 클릭 시에 열려있는 댓글 툴박스 닫기 처리
+                $(document).mouseup(function(e){
+                    var reply_tool_box = $(".reply_tool_box");
+                    if(reply_tool_box.has(e.target).length == 0){
+                        reply_tool_box.css("display", "none");
+                    }
+                })
+	 // 댓글 수정처리
+                $(".comment_area").on("click", ".tool_btn_modify", function(){
+                    // modify 기능 활성화 시에 변경되는 CSS들
+                    $(this).parents(".reply_wrap").find(".comment_text").css("border", "1px solid #ccc").css("border-radius", "0.5px").attr("readonly", false)
+                            .parents(".reply_wrap").siblings().find(".comment_text").css("border", "none").css("border-radius", "0.5px").attr("readonly", true);
+                    $(this).parents(".reply_wrap").find(".modify_btn_wrap").css("display", "block")
+                            .parents(".reply_wrap").siblings().find(".modify_btn_wrap").css("display", "none");
+
+                    // mod 버튼 눌렀을 때의 이벤트
+                    $(this).parents(".reply_wrap").find(".mod_register").click(function(){
+
+                        // 확인 창
+                        var modConResult = confirm("댓글을 수정 하시겠습니까?");
+                        if(modConResult){ // 예
+                            // comment_text 텍스트 값을 재지정해준다
+                            var comment_text = $(this).parents(".reply_wrap").find(".comment_text").val();
+                            // ajax 관련
+                            var data = {comment_id : replyIndex, review_id : review_id, content : comment_text, member_id : member_id };
+                            var comment_id = replyIndex;
+
+                            // data 값 checking
+                            console.log(data);
+
+                            $.ajax({
+                                url :'/reviews/'+review_id+'/'+comment_id,
+                                type : "PUT",
+                                data : JSON.stringify(data),
+                                contentType :"application/json; charset = utf-8",
+                                dataType : "text",
+                                success : function(result){
+                                    console.log("result: "+result);
+                                    // self.location.reload();
+                                    getReviewReplies();
+                                },
+                                error:function(request,status,error){
+                                    console.log("CODE: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+                                }
+                            }); // ajax 끝
+
+                            // 관련 css 되돌리기
+                            $(this).parents(".reply_wrap").find(".comment_text").css("border", "none").css("border-radius", "0.5px").attr("readonly", true);
+                            $(this).parents(".reply_wrap").find(".modify_btn_wrap").css("display", "none");
+
+                        }else{ // 아니오
+                        }
+                    }) // 수정 확인 버튼 끝
+
+                    // cancel 버튼 눌렀을 때 이벤트
+                    $(this).parents(".reply_wrap").find(".mod_cancel").click(function(){
+                        // 관련 css 되돌리기
+                        $(this).parents(".reply_wrap").find(".comment_text").css("border", "none").css("border-radius", "0.5px").attr("readonly", true);
+                        $(this).parents(".reply_wrap").find(".modify_btn_wrap").css("display", "none");
+                        getReviewReplies();
+                    }) // 수정 취소 버튼 끝
+
+                }) // mod 버튼 클릭 이벤트 끝
+	
+});
+
+</script>
+<br>
+    <input type="hidden" name="userId" th:value="${#authentication.name}" />
+    <div class="card">
+        <div class="card-header">댓글</div>
+        <th:block th:each="review: ${reviewDto}">
+        <ul id="reply--box" class="list-group">
+        <input type="hidden" name="reviewId" th:value = "${review.id}" />
+            <li id="reply--1" class="list-group-item d-flex justify-content-between">
+                <div th:text = "${review.content}"></div>
+                <div class="d-flex">
+                    <div class="text-monospace" th:text="${review.email}"></div>
+
+                    <th:block th:if="${#authentication.name} == ${review.email}">
+						<button class="badge btn-warning" id="modify">수정</button><span> | </span>
+                    	<button class="badge btn-danger" id="delete">삭제</button>
+					<th:block>
+                    
+                </div>
+            </li>
+        </ul>
+    </th:block>
+        
+    </div>
+    
+   
+    <section>
+                            <div>
+                                <div class="card-body comment_area">
+
+                                </div>
+                                
+                          
+                                <div class="comment_write">
+                       
+                                    <div class="member_id_wrap">
+                                        <b>
+                                            <input type="hidden" name="userId" th:value="${#authentication.name}" />
+                                            <span class="checkId" name="userId" sec:authentication="name">
+
+                                            </span>
+                                        </b>
+                                    </div>
+                                
+                                    <th:block sec:authorize="isAuthenticated()">
+                                        <form class="mb-4 comment_input">
+                                         <input type="hidden" name="userId" th:value="${#authentication.name}" />
+                                        	<input type="hidden" name="productId" th:value = "${productDto.id}"/>
+                                            <textarea name="content" class="col-10 replyText" placeholder="올바른 댓글 문화를 만듭시다!" rows="3" style="resize:none;"></textarea>
+                                            <div class="submit_btn_wrap col-2">
+                                                <button type="button" class="btn-dark btn_style_sq replyBtn">등록</button>
+                                            </div>
+                                        </form>
+                                    </th:block>
+                                    <th:block sec:authorize="isAnonymous()">
+                                        <form class="mb-4 comment_input replyCant">
+                                            <textarea name="content" class="col-10 replyText" rows="3" placeholder="로그인이 필요한 서비스입니다!" style="resize:none;" readonly></textarea>
+                                            <div class="submit_btn_wrap col-2">
+                                                <button type="button" class="btn-dark btn_style_sq">등록</button>
+                                            </div>
+                                        </form>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </section>
+
+
+
+<div class="d-flex flex-row justify-content-center">
+  <div>
+    <img th:src="@{${productImg.imgUrl}}" height="400"><br>
+  </div>
+  <div class = "detailInfo">
+    <li class="text-center">상품명: <span th:text="${productDto.name}"></span></li>
+    <li>가격:<span th:text="${productDto.price}"></span></li>
+    <li>주문 수량:<span th:text="${productDto.stock}"></span></li>
+    <li>분류:<span th:text="${productDto.category}"></span></li>
+    <li>내용:<span th:text="${productDto.content}"></span></li>
+    
+    <button type="submit">주문하기</button>
+  </div>
+</div>
+</form>

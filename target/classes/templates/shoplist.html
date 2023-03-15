@@ -1,0 +1,18 @@
+<meta charset="utf-8">
+<div class="row mx-auto" th:fragment="list" xmlns:th="http://www.thymeleaf.org" style="width:80%">
+    <h1>Our new Products</h1>
+    <div class="products">
+    
+        <th:block th:each="product, status: ${productList.dtoList}">
+        <a th:href="@{'/product/'+${product.productDTO.id}}">
+        <img th:src="@{${product.imageDTO.imgUrl}}">
+        <p>[[${product.productDTO.name}]]</p>
+        <p class="price">$[[${product.productDTO.price}]]</p>
+      </a>
+    </th:block> 
+    </div>
+
+    
+<div class="clearfix"></div>
+</div>
+

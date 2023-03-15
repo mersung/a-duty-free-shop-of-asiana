@@ -1,0 +1,126 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+</head>
+
+<div layout:fragment="content">
+<form th:action="@{'/order/pay'}" method="post" th:object="${orderDto}">
+<input type="hidden" th:field="${orderDto.cnt}">
+<input type="hidden" th:field="${orderDto.productId}">
+<input type="hidden" th:value="${totalPrice}" />
+<b class="fs-4">상품 주문</b>
+<hr>
+<div>
+	<div style="display: flex; justify-content: space-between;">
+		<div class="form-group" style="width: 20%">
+			<b>탑승일자</b>		
+		</div>			
+		<div class="form-group" style="width: 70%">
+			<input type="date" class="form-control" th:field="*{dpDate}" id="date"><br>
+		</div>
+	</div>
+	
+	<div style="display: flex; justify-content: space-between;">
+		<div class="form-group" style="width: 20%">
+			<b>출발지</b>			
+		</div>			
+		<div class="form-group" style="width: 70%">
+			<select class="form-select" th:field="*{dpAirport}" style="float: right;" name="dpAirport">
+   			<option th:each="place : ${T(com.example.project.dto.Place).values()}" th:value="${place.name()}" th:text="${place.name()}"></option>
+			</select><br>
+		</div>
+	</div>
+	
+	<div style="display: flex; justify-content: space-between;">
+		<div class="form-group" style="width: 20%">
+			<b>도착지</b>			
+		</div>			
+		<div class="form-group" style="width: 70%">
+			<select class="form-select" th:field="*{arAirport}" style="float: right;" name = "arAirport">
+   			<option th:each="place : ${T(com.example.project.dto.Place).values()}" th:value="${place.name()}" th:text="${place.name()}"></option>
+			</select><br>
+		</div>
+	</div>
+</div>
+<br>
+<hr>
+<b class="fs-4">총 결제금액</b><br>
+<hr>
+<div>
+		<div class="form-group" style="width: 100%; text-align: right;">
+			<b class="fs-2">$<span th:text="${totalPrice}"></span></b>
+		</div>
+</div>
+<div>
+	<div style="width:100%; text-align:right">
+		<br>
+		<button type="button" class="btn btn-lg btn-block  btn-custom" id="charge_kakao" style="background-color:transparent; border:none;">
+     <img th:src="@{/img/kakaopay/payment_icon_yellow_medium.png}" alt="">
+</button>
+	</div>
+</div>
+</form>
+
+
+</div>
+</html>
+
+<script>
+
+var productId = [[${orderDto.productId}]];
+var dpAirport = $("select[name=dpAirport] option:selected").text();
+var arAirport = $("select[name=arAirport] option:selected").text();
+var cnt = [[${orderDto.cnt}]];
+var dpDate;
+console.log(dpDate);
+$(document).ready(function(){
+	
+	today = new Date();
+	console.log("today.toISOString() >>>" + today.toISOString());
+	today = today.toISOString().slice(0, 10);
+	console.log("today >>>> " + today);
+	var dpDate = document.getElementById("date");
+	dpDate.value = today;
+	
+	console.log("dpDate>>"+dpDate.value);
+	$('#charge_kakao').click(function(){
+		var order = {
+	            productId : productId,
+	            dpAirport : dpAirport,
+	            arAirport : arAirport,
+	            dpDate : dpDate.value,
+	            cnt : cnt
+	        }
+		console.log(order);
+		$.ajax({
+
+			url:'/team0/order/pay',
+			type: 'POST',
+			dataType : 'json',
+			data : JSON.stringify(order),
+			contentType: "application/json",
+			success:function(data){
+				console.log(data.changer);
+				var box = data.changer;
+				window.open(box);
+			},
+			error:function(error){
+				alert(error);
+			}
+		});
+	});
+	
+
+}); 
+</script>

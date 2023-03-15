@@ -1,0 +1,71 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="js/scripts.js"></script>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<link rel ="stylesheet" th:href="@{/css/styles.css}">
+<link th:href="@{/css/shop.css}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+
+</head>
+<script>
+	$(document).ready(function(){
+		var errorMessage = "[[${errorMsg}]]";
+		console.log(errorMessage);
+		if(errorMessage == "담긴 물품이 없습니다.") { alert(errorMessage); };
+	});
+	
+	// 장바구니 상품 개수 수정 버튼 함수
+	function del(num){
+		var changeCnt = document.getElementById('select_value');
+		location.href="cart/?cnt="+num;
+	}
+</script>
+
+<div layout:fragment="content">
+<b class="fs-4">장바구니</b>
+<hr>
+<form th:action="@{/order/cart}" method="post">
+	<div th:each="product : ${cartList}" style="justify-content: space-between; display: flex; vertical-align: middle;">
+		<img th:src="@{${product.imgUrl}}" height="150" width="150">
+		<div class="form-group" style="width: 20%; position: relative; top: 50px;">
+			<b><span th:text="${product.name}"></span></b>
+		</div>
+		<div class="form-group" style="width: 5%; position: relative; top: 50px;">
+			<b><span th:text="${product.cnt}"></span></b>
+		</div>
+		<div class="form-group" style="width: 10%; position: relative; top: 50px;">
+			<b><span th:text="${product.price}"></span></b>
+		</div>
+		<div class="form-group" style="width: 10%; position: relative; top: 50px;">
+		
+			<select id="select_value" class="form-select">
+				<option th:selected="${product.cnt}=='1'">1</option>
+				<option th:selected="${product.cnt}=='2'">2</option>
+				<option th:selected="${product.cnt}=='3'">3</option>
+				<option th:selected="${product.cnt}=='4'">4</option>
+				<option th:selected="${product.cnt}=='5'">5</option>
+			</select>
+		</div>
+		
+		<div class="form-group" style="width: 7%; position: relative; top: 40px;">
+			<a th:href="@{/cart/{cartId} (cartId=${product.cartId})}" style="color:grey" ><i class="bi bi-x mt-0" style="font-size:30px; margin-top:0px;"></i></a>
+		</div>
+	</div>
+	<div style="width:100%; text-align:right">
+		<button type="submit" class="mybtn mx-auto">주문하기</button>
+	</div>
+</form>
+
+</html>

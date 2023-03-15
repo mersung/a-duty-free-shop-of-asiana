@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script type="text/javascript" th:src="@{'http://dmaps.daum.net/map_js_init/postcode.v2.js'}"></script>
+<link rel="stylesheet" th:href="@{/css/login.css}">
+<script>
+
+	$(document).ready(function(){
+		$("#calldaumPostCode").click(daumPostcode);
+		$("#staticBackdrop").modal("show");
+		$("#postcode").focus(function(){
+			daumPostcode();
+		});
+		$("#ok").on("click",function(){
+			var a1 = $("#agree1").is(":checked");
+			var a2 = $("#agree2").is(":checked");
+			if(a1&&a2){
+				$("#staticBackdrop").modal("hide");
+			}
+			else{
+				alert("모두 동의해주세요");
+			}
+		});
+	});
+	//Daum 우편번호 API 이용
+	function daumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						var address=data.roadAddress;
+						if(data.userSelectedType=="J"){
+							address=data.jibunAddress;
+						}
+						// 우편번호와 주소 정보를 해당 필드에 넣는다.
+						$("#postcode").val(data.zonecode); 
+						$("#address").val(address);	
+						$(this).blur();
+						$("#detailAddress").focus();									
+					}
+				}).open();
+	};
+</script>
+</head>
+<body style="background-color:white" class="body">
+
+<div class="container" id="container">
+  <div class="form-container sign-in-container">
+    <form th:action="@{/login}" method="post"> 
+      <h1>Sign in</h1>
+      <br>
+      <input type="email" name="email" placeholder="Email" />
+      <input type="password" name="passwd" placeholder="Password" />
+      <br>
+      <div style=" justify-content: space-around;">
+	     <button>Sign in</button>
+	     <button class="googlebtn"><a th:href="@{/oauth2/authorization/google}" style="color: white;">Google</a></button>
+      </div>
+	    <a type="button" th:href="@{/signUp}">Sign up</a>	    
+    </form>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please login with your personal info</p>
+        <button class="ghost" id="signIn">Sign In</button>
+      </div>
+      <div class="overlay-panel overlay-right">
+        <h1>기내 면세점</h1>
+        <p>아시아나 IDT</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/login.js}"></script>
+</body>
+</html>

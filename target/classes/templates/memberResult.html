@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/test.css}">
+</head>
+<body>
+<h1 th:text="${action}"></h1>
+<h3 th:text="${message}"></h3>
+<div th:if="${status=='1'}">
+	<a th:href="@{/}">로그인</a>
+</div>
+<div th:if="${status!='1'}">
+	<a th:href="@{/login}">로그인</a>
+	<a th:href="@{/signUp}">회원가입</a>
+</div>
+</body>
+</html>

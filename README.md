@@ -76,9 +76,10 @@
 
 #  :book: DB 아키텍처
 
-![ERD](C:\Users\USER\Desktop\webPJT\team5\README.asset\ERD.PNG)
+![image](https://user-images.githubusercontent.com/86938974/225184111-fd700c25-811a-41fc-a66e-f5b90a6278b7.png)
 
 # :memo: 서비스 아키텍처
+![image](https://user-images.githubusercontent.com/86938974/225184163-ca009b3a-4d26-4c44-a2f6-9ee1b74dc5ee.png)
 
 
 
